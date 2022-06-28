@@ -83,9 +83,9 @@ class RenderStickyHeader extends RenderBox
   }
 
   // short-hand to access the child RenderObjects
-  RenderBox get _headerBox => lastChild!;
+  RenderBox get _headerBox => lastChild ?? RenderLimitedBox(maxHeight: 0, maxWidth: 0);
 
-  RenderBox get _contentBox => firstChild!;
+  RenderBox get _contentBox => firstChild ?? RenderLimitedBox(maxHeight: 0, maxWidth: 0);
 
   double get devicePixelRatio => ui.window.devicePixelRatio;
 
@@ -127,12 +127,12 @@ class RenderStickyHeader extends RenderBox
     // report to widget how much the header is stuck.
     if (_callback != null) {
       final stuckAmount = max(min(headerHeight, stuckOffset), -headerHeight) / headerHeight;
-      _callback!(stuckAmount);
+      _callback?.call(stuckAmount);
     }
   }
 
   double determineStuckOffset() {
-    final scrollBox = _scrollPosition.context.notificationContext!.findRenderObject();
+    final scrollBox = _scrollPosition.context.notificationContext?.findRenderObject();
     if (scrollBox?.attached ?? false) {
       try {
         return localToGlobal(Offset.zero, ancestor: scrollBox).dy;
